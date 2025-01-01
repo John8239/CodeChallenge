@@ -25,5 +25,17 @@ namespace CodeChallenge.Services
 
             return null;
         }
+
+        // I'm going under the assumption that the Compensation object will be completed by this point, including the Employee submodel
+        public Compensation Create(Compensation compensation)
+        {
+            if (compensation != null)
+            {
+                _compensationRepository.Add(compensation);
+                _compensationRepository.SaveAsync().Wait();
+            }
+
+            return compensation;
+        }
     }
 }

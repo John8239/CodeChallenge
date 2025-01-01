@@ -31,5 +31,15 @@ namespace CodeChallenge.Controllers
 
             return Ok(compensation);
         }
+
+        [HttpPost]
+        public IActionResult CreateCompensation([FromBody] Compensation compensation)
+        {
+            _logger.LogDebug($"Received compensation create request for '{compensation.Employee.FirstName} {compensation.Employee.LastName}'");
+
+            _compensationService.Create(compensation);
+
+            return CreatedAtRoute("getCompensationByEmployeeId", new { id = compensation.Employee.EmployeeId }, compensation);
+        }
     }
 }

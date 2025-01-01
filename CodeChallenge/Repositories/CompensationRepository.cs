@@ -32,5 +32,21 @@ namespace CodeChallenge.Repositories
 
             return compensation;
         }
+
+        public Compensation Add(Compensation compensation)
+        {
+            compensation.CompensationId = Guid.NewGuid().ToString();
+            compensation.EmployeeId = compensation.Employee.EmployeeId;
+            compensation.EffectiveDate = DateTime.Now;
+
+            _compensationContext.Compensations.Add(compensation);
+
+            return compensation;
+        }
+
+        public Task SaveAsync()
+        {
+            return _compensationContext.SaveChangesAsync();
+        }
     }
 }
