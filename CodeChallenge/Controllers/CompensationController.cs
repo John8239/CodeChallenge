@@ -37,6 +37,9 @@ namespace CodeChallenge.Controllers
         {
             _logger.LogDebug($"Received compensation create request for '{compensation.Employee.FirstName} {compensation.Employee.LastName}'");
 
+            // I'm going under the assumption that the Compensation object will be completed by this point, including the Employee submodel.
+            // The ReadMe didn't specify what to do in the case that an employee doesn't already exist, so I decided to have the service/repository
+            // layers return null if the employee doesn't exist and here it will return a BadRequest.
             if (_compensationService.Create(compensation) == null)
                 return BadRequest();
 
