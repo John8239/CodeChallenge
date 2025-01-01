@@ -25,7 +25,10 @@ namespace CodeChallenge.Repositories
             Compensation compensation = _compensationContext.Compensations.Where(c => c.EmployeeId == id).OrderByDescending(c => c.EffectiveDate).FirstOrDefault();
             Employee employee = _employeeContext.Employees.FirstOrDefault(e => e.EmployeeId == id);
 
-            compensation.Employee = employee;
+            if (employee != null) 
+            {
+                compensation.Employee = employee;
+            }
 
             return compensation;
         }
