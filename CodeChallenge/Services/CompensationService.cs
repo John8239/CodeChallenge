@@ -31,7 +31,10 @@ namespace CodeChallenge.Services
         {
             if (compensation != null)
             {
-                _compensationRepository.Add(compensation);
+                if (_compensationRepository.Add(compensation) == null)
+                {
+                    return null;
+                }
                 _compensationRepository.SaveAsync().Wait();
             }
 

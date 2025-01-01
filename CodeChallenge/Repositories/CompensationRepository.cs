@@ -35,13 +35,18 @@ namespace CodeChallenge.Repositories
 
         public Compensation Add(Compensation compensation)
         {
-            compensation.CompensationId = Guid.NewGuid().ToString();
-            compensation.EmployeeId = compensation.Employee.EmployeeId;
-            compensation.EffectiveDate = DateTime.Now;
+            if (_employeeContext.Employees.FirstOrDefault(e => e.EmployeeId == compensation.Employee.EmployeeId) != null)
+            {
+                compensation.CompensationId = Guid.NewGuid().ToString();
+                compensation.EmployeeId = compensation.Employee.EmployeeId;
+                compensation.EffectiveDate = DateTime.Now;
 
-            _compensationContext.Compensations.Add(compensation);
+                _compensationContext.Compensations.Add(compensation);
 
-            return compensation;
+                return compensation;
+            }
+
+            return null;
         }
 
         public Task SaveAsync()

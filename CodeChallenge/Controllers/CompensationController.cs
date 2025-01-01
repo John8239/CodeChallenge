@@ -37,7 +37,8 @@ namespace CodeChallenge.Controllers
         {
             _logger.LogDebug($"Received compensation create request for '{compensation.Employee.FirstName} {compensation.Employee.LastName}'");
 
-            _compensationService.Create(compensation);
+            if (_compensationService.Create(compensation) == null)
+                return BadRequest();
 
             return CreatedAtRoute("getCompensationByEmployeeId", new { id = compensation.Employee.EmployeeId }, compensation);
         }
