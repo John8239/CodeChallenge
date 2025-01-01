@@ -29,20 +29,23 @@ namespace CodeChallenge.Controllers
 
             Employee employee = _employeeService.GetById(id);
 
-            int total = 0;
-
-            // Using recursion in the helper function call below to get the NumberOfReports
-            ReportingStructure reportingStructure = new ReportingStructure()
+            if (employee != null)
             {
-                Employee = employee,
-                NumberOfReports = employee.DirectReports != null && employee.DirectReports.Count() > 0 ?
-                    CountDirectReports(employee.DirectReports, ref total) : 0
-            };
+                int total = 0;
 
-            if (reportingStructure == null)
-                return NotFound();
+                // Using recursion in the helper function call below to get the NumberOfReports
+                ReportingStructure reportingStructure = new ReportingStructure()
+                {
+                    Employee = employee,
+                    NumberOfReports = employee.DirectReports != null && employee.DirectReports.Count() > 0 ?
+                        CountDirectReports(employee.DirectReports, ref total) : 0
+                };
 
-            return Ok(reportingStructure);
+                return Ok(reportingStructure);
+
+            }
+            // Not sure what your conventions are around omitting the else block
+            return NotFound();
         }
 
         #region Helper Functions
