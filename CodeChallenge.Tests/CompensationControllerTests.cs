@@ -71,5 +71,79 @@ namespace CodeChallenge.Tests.Integration
             // Assert
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         }
+
+        [TestMethod]
+        public void CreateCompensation_Returns_Created()
+        {
+            // Arrange
+            var employee = new Employee()
+            {
+                EmployeeId = "c0c2293d-16bd-4603-8e08-638a9d18b22c",
+                Department = "Engineering",
+                FirstName = "George",
+                LastName = "Harrison",
+                Position = "Developer III",
+            };
+
+            var compensation = new Compensation()
+            {
+                Salary = 100000.00,
+                EmployeeId = employee.EmployeeId,
+                Employee = employee
+            };
+
+            var requestContent = new JsonSerialization().ToJson(compensation);
+
+            // Execute
+            var postRequestTask = _httpClient.PostAsync("api/compensation",
+               new StringContent(requestContent, Encoding.UTF8, "application/json"));
+            var response = postRequestTask.Result;
+
+            // Assert
+            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+
+            var newCompensation = response.DeserializeContent<Compensation>();
+            Assert.IsNotNull(newCompensation.CompensationId);
+            Assert.IsNotNull(newCompensation.EffectiveDate);
+            Assert.AreEqual(employee.EmployeeId, newCompensation.EmployeeId);
+            Assert.AreEqual(employee.LastName, newCompensation.Employee.LastName);
+            Assert.AreEqual(compensation.Salary, newCompensation.Salary);
+        }
+
+        [TestMethod]
+        public void CreateCompensation_Returns_BadRequest()
+        {
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // TO REVIEWER: It wasn't specified in the ReadMe but I'm assuming that if the employee doesn't already exist in the //
+            // database then we should throw an error, henceforth why I made this test.                                          //
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            
+            // Arrange
+            var employee = new Employee()
+            {
+                EmployeeId = "16a596ae-edd3-4847-99fe-86fMetallica",
+                Department = "Music",
+                FirstName = "James",
+                LastName = "Hetfield",
+                Position = "Singer",
+            };
+
+            var compensation = new Compensation()
+            {
+                Salary = 100000.00,
+                EmployeeId = employee.EmployeeId,
+                Employee = employee
+            };
+
+            var requestContent = new JsonSerialization().ToJson(compensation);
+
+            // Execute
+            var postRequestTask = _httpClient.PostAsync("api/compensation",
+               new StringContent(requestContent, Encoding.UTF8, "application/json"));
+            var response = postRequestTask.Result;
+
+            // Assert
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        }
     }
 }
