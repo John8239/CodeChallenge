@@ -27,9 +27,41 @@ namespace CodeChallenge.Controllers
         {
             _logger.LogDebug($"Received ReportingStructure get request for EmployeeId '{id}'");
 
+            Employee employee = _employeeService.GetById(id);
 
+            int total = 0;
 
-            return Ok();
+            // Using recursion in the helper function call below to get the NumberOfReports
+            ReportingStructure reportingStructure = new ReportingStructure()
+            {
+                Employee = employee,
+                NumberOfReports = employee.DirectReports != null && employee.DirectReports.Count() > 0 ?
+                    CountDirectReports(employee.DirectReports, ref total) : 0
+            };
+
+            if (reportingStructure == null)
+                return NotFound();
+
+            return Ok(reportingStructure);
         }
+
+        #region Helper Functions
+
+        private int CountDirectReports(List<Employee> directReports, ref int total)
+        {
+            foreach (Employee emp in directReports)
+            {
+                // Also checking .Count() > 0 might be redundant but better safe than sorry
+                if (emp.DirectReports != null && emp.DirectReports.Count() > 0)
+                {
+                    CountDirectReports(emp.DirectReports, ref total);
+                }
+                total++;
+            }
+
+            return total;
+        }
+
+        #endregion
     }
 }
