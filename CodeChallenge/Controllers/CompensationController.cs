@@ -24,7 +24,12 @@ namespace CodeChallenge.Controllers
         {
             _logger.LogDebug($"Received compensation get request for employee '{id}'");
 
-            return Ok();
+            var compensation = _compensationService.GetById(id);
+
+            if (compensation == null)
+                return NotFound();
+
+            return Ok(compensation);
         }
     }
 }

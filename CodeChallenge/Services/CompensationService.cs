@@ -18,7 +18,12 @@ namespace CodeChallenge.Services
 
         public Compensation GetById(string id)
         {
-            return new Compensation();
+            if (!String.IsNullOrEmpty(id))
+            {
+                return _compensationRepository.GetById(id);
+            }
+
+            return null;
         }
     }
 }
